@@ -1,0 +1,26 @@
+# https://taskfile.dev
+
+version: "3"
+
+set: [errexit, nounset, pipefail, xtrace]
+
+dotenv: [".env"]
+
+tasks:
+  repl:
+    cmds:
+      - uv run python3
+  ruff_check:
+    cmds:
+      - uv run ruff check
+      - uv run ruff format --check
+  ruff_fix:
+    cmds:
+      - uv run ruff check --fix 
+      - uv run ruff format
+  pyright_check:
+    cmds:
+      - uv run pyright
+  app:
+    cmds:
+      - uv run main.py
