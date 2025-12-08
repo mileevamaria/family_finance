@@ -21,6 +21,14 @@ tasks:
   pyright_check:
     cmds:
       - uv run pyright
-  app:
+  app_env:
     cmds:
       - uv run main.py
+  build_app:
+      - docker build . -t family_finance
+  run_app_dev:
+    cmds:
+      - docker-compose -f docker-compose.yaml -f docker-compose-dev.yaml up
+  run_app:
+    cmds:
+      - docker-compose -f docker-compose.yaml up -d
