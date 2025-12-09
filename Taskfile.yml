@@ -32,3 +32,6 @@ tasks:
   run_app:
     cmds:
       - docker-compose -f docker-compose.yaml up -d
+  run_app_manually:
+      - uv run fastapi dev app/main.py --port 80 --host 0.0.0.0
+
