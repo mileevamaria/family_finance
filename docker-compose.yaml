@@ -8,15 +8,3 @@ services:
     ports:
       - "80:80"
     command: uv run fastapi run app/main.py --port 80 --host 0.0.0.0
-    develop:
-      # Create a watch configuration to update the app
-      watch:
-        # Sync the working directory with the /app directory in the container
-        - action: sync
-          path: .
-          target: /app
-          ignore:
-            - .venv/
-        # Rebuild the image if dependencies change by checking uv.lock
-        - action: rebuild
-          path: ./uv.lock
