@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import aiosqlite
 import requests
 from fastapi import FastAPI, status
-from pydantic_models import Env, Update
+from pydantic_models import Category, Env, Expense, Update
 from sql_scripts import (
     SQL_CREATE_MESSAGE,
     SQL_CREATE_TABLE_CATEGORIES,
@@ -14,7 +14,18 @@ from sql_scripts import (
     SQL_CREATE_TABLE_USERS,
     SQL_CREATE_UPDATE,
     SQL_CREATE_USER_IF_NOT_EXISTS,
+    SQL_CREATE_EXPENSE,
 )
+
+async def parse_expense(update: Update) -> Expense:
+    message_text = update.message.text
+    message_date = update.message.date
+    category_name, money = message_text.split(' ')
+    return Expense(
+        category=Category(name=category_name),
+        sum=float(money),
+        date=message_date,
+    )
 
 
 async def create_db_and_tables(env: Env) -> None:
@@ -64,10 +75,13 @@ async def get() -> dict:
 @app.post('/message/')
 async def post(update: Update) -> Update:
     env = Env.from_env(os.getenv)
+    expense = await parse_expense(update=update)
     async with aiosqlite.connect(env.db_file_name) as db:
         await db.execute(
             SQL_CREATE_USER_IF_NOT_EXISTS.format(user=update.message.user))
         await db.execute(SQL_CREATE_MESSAGE.format(message=update.message))
         await db.execute(SQL_CREATE_UPDATE.format(update=update))
+        await db.commit()
+        await db.executescript(SQL_CREATE_EXPENSE.format(expense=expense))
         await db.commit()
     return update

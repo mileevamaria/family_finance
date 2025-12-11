@@ -102,3 +102,7 @@ SQL_CREATE_UPDATE: Final[str] = """
     INSERT INTO updates (telegram_id, message_telegram_id)
     VALUES ('{update.telegram_id}', '{update.message.telegram_id}')
 """
+
+SQL_CREATE_EXPENSE: Final[str] = """
+    
+"""

@@ -1,4 +1,6 @@
 from collections.abc import Callable
+from datetime import datetime
+from enum import Enum
 from pydantic import BaseModel, Field
 
 
@@ -30,10 +32,27 @@ class User(BaseModel):
 class Message(BaseModel):
     telegram_id: int = Field(..., alias='message_id')
     user: User = Field(..., alias='from')
-    date: int
+    date: datetime
     text: str
 
 
 class Update(BaseModel):
     telegram_id: int = Field(..., alias='update_id')
     message: Message
+
+
+class Category(BaseModel):
+    name: str
+
+
+class CurrencyEnum(str, Enum):
+    AMD = 'amd'
+    USD = 'usd'
+    RUB = 'rub'
+
+
+class Expense(BaseModel):
+    category: Category
+    sum: float
+    currency: CurrencyEnum = CurrencyEnum.AMD
+    date: datetime
