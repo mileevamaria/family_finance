@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
+
 from pydantic import BaseModel, Field
 
 
@@ -25,8 +26,13 @@ class Env(BaseModel):
 class User(BaseModel):
     telegram_id: int = Field(..., alias='id')
     first_name: str
-    last_name: str
-    username: str
+    last_name: str | None = None
+    username: str | None = None
+
+
+class Chat(BaseModel):
+    telegram_id: int = Field(..., alias='id')
+    chat_type: str = Field(..., alias='type')
 
 
 class Message(BaseModel):
@@ -34,11 +40,23 @@ class Message(BaseModel):
     user: User = Field(..., alias='from')
     date: datetime
     text: str
+    chat: Chat
+    reply_markup: dict | None = None
+    reply_to_message: 'Message | None' = None
+
+
+class CallbackQuery(BaseModel):
+    telegram_id: int = Field(..., alias='id')
+    user: User = Field(..., alias='from')
+    message: Message
+    chat_instance: int
+    data: str
 
 
 class Update(BaseModel):
     telegram_id: int = Field(..., alias='update_id')
-    message: Message
+    message: Message | None = None
+    callback_query: CallbackQuery | None = None
 
 
 class Category(BaseModel):
@@ -56,3 +74,4 @@ class Expense(BaseModel):
     sum: float
     currency: CurrencyEnum = CurrencyEnum.AMD
     date: datetime
+    metadata: dict
