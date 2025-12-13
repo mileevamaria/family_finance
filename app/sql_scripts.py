@@ -1,20 +1,19 @@
 from typing import Final
 
-
 SQL_CREATE_TABLE_USERS: Final[str] = """
 -- =============================================================================
 --  `summary` table: Stores users who sent messages to the bot
 -- =============================================================================
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY ASC,
-        telegram_id INTEGER NOT NULL UNIQUE,
+        telegram_id INTEGER NOT NULL,
         first_name VARCHAR(64) NOT NULL,
         last_name VARCHAR(64) NOT NULL,
-        username VARCHAR(64) NOT NULL UNIQUE
+        username VARCHAR(64)
     );
 
-    CREATE INDEX IF NOT EXISTS idx_telegram_user_id
-    ON users (telegram_id, username);
+    CREATE INDEX IF NOT EXISTS idx_telegram_id
+    ON users (telegram_id);
 """
 
 SQL_CREATE_TABLE_MESSAGES: Final[str] = """
@@ -23,7 +22,7 @@ SQL_CREATE_TABLE_MESSAGES: Final[str] = """
 -- =============================================================================
     CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY ASC,
-        telegram_id INTEGER NOT NULL UNIQUE,
+        telegram_id INTEGER NOT NULL,
         user_telegram_id INTEGER NOT NULL,
         date DATETIME NOT NULL,
         text TEXT NOT NULL,
@@ -40,7 +39,7 @@ SQL_CREATE_TABLE_UPDATES: Final[str] = """
 -- =============================================================================
     CREATE TABLE IF NOT EXISTS updates (
         id INTEGER PRIMARY KEY ASC,
-        telegram_id INTEGER NOT NULL UNIQUE,
+        telegram_id INTEGER NOT NULL,
         message_telegram_id INTEGER NOT NULL,
         FOREIGN KEY (message_telegram_id) REFERENCES messages(telegram_id)
     );
@@ -76,33 +75,45 @@ SQL_CREATE_TABLE_EXPENSES: Final[str] = """
 SQL_CREATE_USER_IF_NOT_EXISTS: Final[str] = """
     INSERT INTO users (telegram_id, first_name, last_name, username)
     SELECT
-        '{user.telegram_id}',
+        {user.telegram_id},
         '{user.first_name}',
         '{user.last_name}',
         '{user.username}'
     WHERE NOT EXISTS (
         SELECT 1
         FROM users
-        WHERE telegram_id = '{user.telegram_id}'
-            AND username = '{user.username}'
+        WHERE telegram_id = {user.telegram_id}
     );
 """
 
 SQL_CREATE_MESSAGE: Final[str] = """
     INSERT INTO messages (telegram_id, user_telegram_id, date, text)
     VALUES (
-        '{message.telegram_id}',
-        '{message.user.telegram_id}',
+        {message.telegram_id},
+        {message.user.telegram_id},
         '{message.date}',
         '{message.text}'
-    )
+    );
 """
 
 SQL_CREATE_UPDATE: Final[str] = """
     INSERT INTO updates (telegram_id, message_telegram_id)
-    VALUES ('{update.telegram_id}', '{update.message.telegram_id}')
+    VALUES ('{update.telegram_id}', '{message.telegram_id}');
 """
 
 SQL_CREATE_EXPENSE: Final[str] = """
-    
+    INSERT INTO categories (name)
+    SELECT '{expense.category.name}'
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM categories
+        WHERE name = '{expense.category.name}'
+    );
+
+    INSERT INTO expenses (sum, category_id, date)
+    VALUES (
+        {expense.sum},
+        (SELECT id FROM categories WHERE name = '{expense.category.name}'),
+        '{expense.date}'
+    );
 """

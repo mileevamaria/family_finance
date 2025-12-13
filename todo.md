@@ -15,16 +15,16 @@ Basic commands:
   + MTD
 
 Add expense:
-- Notify when added
-- <number> <category>
-- <category> <number>
+- Notify when added DONE
+- <number> <category> DONE
+- <category> <number> DONE
 - Matching:
-  + Strict case insensitive match
-  + Strict contains match
+  + Strict case insensitive match DONE
+  + Strict contains match DONE
   + 2+ matches -> Give user a choice (check how many buttons are possible, if more matches than this number, tell user about that and ask for clarification)
   + None found -> Create new category request
-- <category> -> We're adding to category X, gimme the number
-- <number> -> We're adding X amount, gimme the category
+- <category> -> We're adding to category X, gimme the number DONE
+- <number> -> We're adding X amount, gimme the category DONE
 
 Backlog:
 - Figure out currencies + conversion rates
@@ -32,3 +32,6 @@ Backlog:
 - Levenshtein distance for category matching
 - Rename category
 - Collaboration
+- Logs
+- Taskfile
+- README.md

@@ -33,5 +33,8 @@ tasks:
     cmds:
       - docker-compose -f docker-compose.yaml up -d
   run_app_manually:
+    cmds:
       - uv run fastapi dev app/main.py --port 80 --host 0.0.0.0
-
+  init_ngrok:
+    cmds:
+      - ngrok http 80
