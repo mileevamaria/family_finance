@@ -13,7 +13,7 @@ Accounting of family's expenses.
 - [ ] /delete (+ confirmation)
 - [ ] /category_add
   - [ ] empty -> ask
-  - [ ] <name> -> add category + notify
+  - [ ] "<name>" -> add category + notify
 - [ ] /category_list - lists them
 - [ ] /report (image, matplotlib, pie/bar chart or whatever)
   - [ ] all
@@ -22,10 +22,10 @@ Accounting of family's expenses.
   - [ ] MTD
 - [x] Add expense:
   - [x] Notify when added
-  - [x] <number> <category>
-  - [x] <category> <number> 
-  - [x] <category> -> We're adding to category X, gimme the number
-  - [x] <number> -> We're adding X amount, gimme the category
+  - [x] "<number> <category>"
+  - [x] "<category> <number>"
+  - [x] "<category>" -> We're adding to category X, gimme the number
+  - [x] "<number>" -> We're adding X amount, gimme the category
 - Category matching:
   - [x] Strict case insensitive match
   - [x] Strict contains match
